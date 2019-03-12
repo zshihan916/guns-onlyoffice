@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.stylefeng.guns.modular.system.mapper.AttachmentMapper">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.FolderMapper">
 
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.stylefeng.guns.modular.system.entity.Folder">
+        <id column="FOLDER_ID" property="folderId"/>
+        <result column="PID" property="pid"/>
+        <result column="PIDS" property="pids"/>
+        <result column="NAME" property="name"/>
+        <result column="PATH" property="path"/>
+        <result column="DESCRIPTION" property="description"/>
+        <result column="VERSION" property="version"/>
+        <result column="SORT" property="sort"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+        <result column="CREATE_USER" property="createUser"/>
+        <result column="UPDATE_USER" property="updateUser"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        FOLDER_ID AS folderId, PID AS pid, PIDS AS pids, NAME as name, path AS path, DESCRIPTION AS description, VERSION AS version, SORT AS sort, CREATE_TIME AS createTime, UPDATE_TIME AS updateTime, CREATE_USER AS createUser, UPDATE_USER AS updateUser
+    </sql>
+
+    <select id="tree" resultType="cn.stylefeng.guns.core.common.node.ZTreeNode">
+		select FOLDER_ID AS id, PID as pId, NAME as name,
+		(
+		CASE
+		WHEN (PID = 0 OR PID IS NULL) THEN
+		'true'
+		ELSE
+		'false'
+		END
+		) as open from sys_folder
+	</select>
+
+    <select id="list" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_folder where 1 = 1
+        <if test="condition != null and condition != ''">
+            and NAME like CONCAT('%',#{condition},'%') or PATH like CONCAT('%',#{condition},'%')
+        </if>
+        <if test="folderId != null and folderId != ''">
+            and (FOLDER_ID = #{folderId} or FOLDER_ID in ( select FOLDER_ID from sys_folder where PIDS like CONCAT('%[',
+            #{folderId}, ']%') ))
+        </if>
+        order by SORT ASC
+    </select>
+
+    <select id="treeviewNodes" resultType="cn.stylefeng.guns.core.common.node.TreeviewNode">
+        select FOLDER_ID AS tags, PID as parentId, NAME as text from sys_folder
+    </select>
+
+    <select id="getParentFolder" resultType="cn.stylefeng.guns.modular.system.entity.Folder">
+        select
+        <include refid="Base_Column_List"/>
+        FROM
+        sys_folder p
+        WHERE
+        p.FOLDER_ID = (SELECT PID FROM sys_folder s WHERE s.FOLDER_ID = #{folder.folderId} )
+    </select>
 
 </mapper>

@@ -33,7 +33,7 @@ public class AttachmentController extends BaseController {
      */
     @RequestMapping("/dept_add")
     public String deptAdd() {
-        return PREFIX + "attachment_add.html";
+        return PREFIX + "folder_add.html";
     }
 
 

@@ -46,6 +46,7 @@ public class ConstantFactory implements IConstantFactory {
 
     private RoleMapper roleMapper = SpringContextHolder.getBean(RoleMapper.class);
     private DeptMapper deptMapper = SpringContextHolder.getBean(DeptMapper.class);
+    private FolderMapper folderMapper = SpringContextHolder.getBean(FolderMapper.class);
     private DictMapper dictMapper = SpringContextHolder.getBean(DictMapper.class);
     private UserMapper userMapper = SpringContextHolder.getBean(UserMapper.class);
     private MenuMapper menuMapper = SpringContextHolder.getBean(MenuMapper.class);
@@ -133,6 +134,23 @@ public class ConstantFactory implements IConstantFactory {
             return "";
         }
     }
+
+    @Override
+    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.FOLDER_NAME + "'+#folderId")
+    public String getFolderName(Long folderId) {
+        if (folderId == null) {
+            return "";
+        } else if (folderId == 0L) {
+            return "顶级";
+        } else {
+            Folder folder = folderMapper.selectById(folderId);
+            if (ToolUtil.isNotEmpty(folder) && ToolUtil.isNotEmpty(folder.getName())) {
+                return folder.getName();
+            }
+            return "";
+        }
+    }
+
 
     @Override
     public String getMenuNames(String menuIds) {
