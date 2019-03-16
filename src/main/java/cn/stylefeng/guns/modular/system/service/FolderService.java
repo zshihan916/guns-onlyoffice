@@ -41,7 +41,7 @@ public class FolderService extends ServiceImpl<FolderMapper, Folder> {
         this.folderSetPids(folder);
 
         //完善路径，加上所有父亲的path
-        this.folderSetParentPath(folder);
+        this.setParentPath(folder);
 
         this.save(folder);
     }
@@ -63,7 +63,7 @@ public class FolderService extends ServiceImpl<FolderMapper, Folder> {
         this.folderSetPids(folder);
 
         //完善路径，加上所有父亲的path
-        this.folderSetParentPath(folder);
+        this.setParentPath(folder);
 
         this.updateById(folder);
     }
@@ -133,33 +133,30 @@ public class FolderService extends ServiceImpl<FolderMapper, Folder> {
         }
     }
 
-
     /**
-     * 设置目录path
-     */
-    private void folderSetParentPath(Folder folder) {
-        String parentPath = getFullPath(folder);
-        folder.setPath(parentPath);
-    }
-
-    /**
-     * 获取 父路径
+     * 设置 父路径
      *
      * @param folder
      * @return
      */
-    private String getFullPath(Folder folder) {
-        if (ToolUtil.isEmpty(folder.getPid()) || folder.getPid().equals(0L)) {
-            return "";
-        } else {
-            //查询父path
-            Folder p = folderMapper.selectById(folder.getPid());
-            if (p == null) {
-                return "";
-            } else {
-                return getFullPath(p) + folder.getPath();
-            }
+    private void setParentPath(Folder folder) {
+        Folder parent = getParent(folder);
+        if (ToolUtil.isNotEmpty(parent)) {
+            String path = folder.getPath();
+            folder.setPath(parent.getPath() + path);
         }
     }
+
+    public Folder getParent(Folder folder) {
+        if (folder == null || folder.getPid() == null || folder.getPid() == 0) {
+            return null;
+        }
+        Folder parent = folderMapper.selectById(folder.getPid());
+        if (parent == null || ToolUtil.isEmpty(parent.getPath())) {
+            return null;
+        }
+        return parent;
+    }
+
 
 }
