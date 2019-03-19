@@ -9,7 +9,7 @@
         <div class="layui-col-sm12 layui-col-md3 layui-col-lg2">
             <div class="layui-card">
                 <div class="layui-card-body mini-bar">
-                    <div class="ztree" id="deptTree"></div>
+                    <div class="ztree" id="folderTree"></div>
                 </div>
             </div>
         </div>
@@ -23,14 +23,14 @@
                             </div>
                             <div class="layui-inline">
                                 <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
-                                @if(shiro.hasPermission("/dept/add")){
+                                @if(shiro.hasPermission("/attachment/add")){
                                 <button id="btnAdd" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>
                                 @}
                                 <button id="btnExp" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
                             </div>
                         </div>
                     </div>
-                    <table class="layui-table" id="deptTable" lay-filter="deptTable"></table>
+                    <table class="layui-table" id="attachmentTable" lay-filter="attachmentTable"></table>
                 </div>
             </div>
         </div>
@@ -38,10 +38,10 @@
 </div>
 
 <script type="text/html" id="tableBar">
-    @if(shiro.hasPermission("/dept/update")){
+    @if(shiro.hasPermission("/attachment/update")){
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
     @}
-    @if(shiro.hasPermission("/dept/delete")){
+    @if(shiro.hasPermission("/attachment/delete")){
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
     @}
 </script>

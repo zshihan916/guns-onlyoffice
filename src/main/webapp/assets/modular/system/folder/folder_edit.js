@@ -1,7 +1,7 @@
 /**
  * 角色详情对话框
  */
-var DeptInfoDlg = {
+var FolderInfoDlg = {
     data: {
         pid: "",
         pName: ""
@@ -18,32 +18,32 @@ layui.use(['layer', 'form', 'admin', 'ax'], function () {
     // 让当前iframe弹层高度适应
     admin.iframeAuto();
 
-    //获取部门信息
-    var ajax = new $ax(Feng.ctxPath + "/dept/detail/" + Feng.getUrlParam("deptId"));
+    //获取目录信息
+    var ajax = new $ax(Feng.ctxPath + "/folder/detail/" + Feng.getUrlParam("folderId"));
     var result = ajax.start();
-    form.val('deptForm', result);
+    form.val('folderForm', result);
 
     // 点击上级角色时
     $('#pName').click(function () {
-        var formName = encodeURIComponent("parent.DeptInfoDlg.data.pName");
-        var formId = encodeURIComponent("parent.DeptInfoDlg.data.pid");
-        var treeUrl = encodeURIComponent(Feng.ctxPath + "/dept/tree");
+        var formName = encodeURIComponent("parent.FolderInfoDlg.data.pName");
+        var formId = encodeURIComponent("parent.FolderInfoDlg.data.pid");
+        var treeUrl = encodeURIComponent(Feng.ctxPath + "/folder/tree");
 
         layer.open({
             type: 2,
-            title: '父级部门',
+            title: '父级目录',
             area: ['300px', '200px'],
             content: Feng.ctxPath + '/system/commonTree?formName=' + formName + "&formId=" + formId + "&treeUrl=" + treeUrl,
             end: function () {
-                $("#pid").val(DeptInfoDlg.data.pid);
-                $("#pName").val(DeptInfoDlg.data.pName);
+                $("#pid").val(FolderInfoDlg.data.pid);
+                $("#pName").val(FolderInfoDlg.data.pName);
             }
         });
     });
 
     // 表单提交事件
     form.on('submit(btnSubmit)', function (data) {
-        var ajax = new $ax(Feng.ctxPath + "/dept/update", function (data) {
+        var ajax = new $ax(Feng.ctxPath + "/folder/update", function (data) {
             Feng.success("修改成功！");
 
             //传给上个页面，刷新table用

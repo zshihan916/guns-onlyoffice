@@ -6,24 +6,24 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
     var $ZTree = layui.ztree;
 
     /**
-     * 系统管理--部门管理
+     * 系统管理--目录管理
      */
-    var Dept = {
-        tableId: "deptTable",
+    var Folder = {
+        tableId: "folderTable",
         condition: {
-            deptId: ""
+            folderId: ""
         }
     };
 
     /**
      * 初始化表格的列
      */
-    Dept.initColumn = function () {
+    Folder.initColumn = function () {
         return [[
             {type: 'checkbox'},
-            {field: 'deptId', hide: true, sort: true, title: 'id'},
-            {field: 'simpleName', sort: true, title: '部门简称'},
-            {field: 'fullName', sort: true, title: '部门全称'},
+            {field: 'folderId', hide: true, sort: true, title: 'id'},
+            {field: 'name', sort: true, title: '目录全称'},
+            {field: 'path', sort: true, title: '层级路径'},
             {field: 'sort', sort: true, title: '排序'},
             {field: 'description', sort: true, title: '备注'},
             {align: 'center', toolbar: '#tableBar', title: '操作', minWidth: 200}
@@ -33,32 +33,32 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
     /**
      * 点击查询按钮
      */
-    Dept.search = function () {
+    Folder.search = function () {
         var queryData = {};
         queryData['condition'] = $("#name").val();
-        queryData['deptId'] = Dept.condition.deptId;
-        table.reload(Dept.tableId, {where: queryData});
+        queryData['folderId'] = Folder.condition.folderId;
+        table.reload(Folder.tableId, {where: queryData});
     };
 
     /**
-     * 选择部门时
+     * 选择目录时
      */
-    Dept.onClickDept = function (e, treeId, treeNode) {
-        Dept.condition.deptId = treeNode.id;
-        Dept.search();
+    Folder.onClickFolder = function (e, treeId, treeNode) {
+        Folder.condition.folderId = treeNode.id;
+        Folder.search();
     };
 
     /**
      * 弹出添加
      */
-    Dept.openAddDept = function () {
+    Folder.openAddFolder = function () {
         admin.putTempData('formOk', false);
         top.layui.admin.open({
             type: 2,
-            title: '添加部门',
-            content: Feng.ctxPath + '/dept/dept_add',
+            title: '添加目录',
+            content: Feng.ctxPath + '/folder/folder_add',
             end: function () {
-                admin.getTempData('formOk') && table.reload(Dept.tableId);
+                admin.getTempData('formOk') && table.reload(Folder.tableId);
             }
         });
     };
@@ -66,8 +66,8 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
     /**
      * 导出excel按钮
      */
-    Dept.exportExcel = function () {
-        var checkRows = table.checkStatus(Dept.tableId);
+    Folder.exportExcel = function () {
+        var checkRows = table.checkStatus(Folder.tableId);
         if (checkRows.data.length === 0) {
             Feng.error("请选择要导出的数据");
         } else {
@@ -76,81 +76,81 @@ layui.use(['table', 'admin', 'ax', 'ztree'], function () {
     };
 
     /**
-     * 点击编辑部门
+     * 点击编辑目录
      *
      * @param data 点击按钮时候的行数据
      */
-    Dept.onEditDept = function (data) {
+    Folder.onEditFolder = function (data) {
         admin.putTempData('formOk', false);
         top.layui.admin.open({
             type: 2,
-            title: '修改部门',
-            content: Feng.ctxPath + '/dept/dept_update?deptId=' + data.deptId,
+            title: '修改目录',
+            content: Feng.ctxPath + '/folder/folder_update?folderId=' + data.folderId,
             end: function () {
-                admin.getTempData('formOk') && table.reload(Dept.tableId);
+                admin.getTempData('formOk') && table.reload(Folder.tableId);
             }
         });
     };
 
     /**
-     * 点击删除部门
+     * 点击删除目录
      *
      * @param data 点击按钮时候的行数据
      */
-    Dept.onDeleteDept = function (data) {
+    Folder.onDeleteFolder = function (data) {
         var operation = function () {
-            var ajax = new $ax(Feng.ctxPath + "/dept/delete", function () {
+            var ajax = new $ax(Feng.ctxPath + "/folder/delete", function () {
                 Feng.success("删除成功!");
-                table.reload(Dept.tableId);
+                table.reload(Folder.tableId);
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("deptId", data.deptId);
+            ajax.set("folderId", data.folderId);
             ajax.start();
         };
-        Feng.confirm("是否删除部门 " + data.simpleName + "?", operation);
+        Feng.confirm("是否删除目录 " + data.name + "?", operation);
     };
 
     // 渲染表格
     var tableResult = table.render({
-        elem: '#' + Dept.tableId,
-        url: Feng.ctxPath + '/dept/list',
+        elem: '#' + Folder.tableId,
+        url: Feng.ctxPath + '/folder/list',
         page: true,
         height: "full-158",
         cellMinWidth: 100,
-        cols: Dept.initColumn()
+        cols: Folder.initColumn()
     });
 
-    //初始化左侧部门树
-    var ztree = new $ZTree("deptTree", "/dept/tree");
-    ztree.bindOnClick(Dept.onClickDept);
+    //初始化左侧目录树
+    var ztree = new $ZTree("folderTree", "/folder/tree");
+    ztree.bindOnClick(Folder.onClickFolder);
 
     ztree.init();
 
     // 搜索按钮点击事件
     $('#btnSearch').click(function () {
-        Dept.search();
+        Folder.search();
     });
 
     // 添加按钮点击事件
     $('#btnAdd').click(function () {
-        Dept.openAddDept();
+        Folder.openAddFolder();
     });
 
     // 导出excel
     $('#btnExp').click(function () {
-        Dept.exportExcel();
+        Folder.exportExcel();
     });
 
     // 工具条点击事件
-    table.on('tool(' + Dept.tableId + ')', function (obj) {
+    table.on('tool(' + Folder.tableId + ')', function (obj) {
         var data = obj.data;
         var layEvent = obj.event;
 
         if (layEvent === 'edit') {
-            Dept.onEditDept(data);
+            Folder.onEditFolder(data);
         } else if (layEvent === 'delete') {
-            Dept.onDeleteDept(data);
+            Folder.onDeleteFolder(data);
         }
     });
 });

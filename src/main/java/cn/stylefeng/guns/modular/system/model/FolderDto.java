@@ -35,10 +35,6 @@ public class FolderDto implements Serializable {
      */
     private String path;
     /**
-     * 全称
-     */
-    private String fullName;
-    /**
      * 描述
      */
     private String description;

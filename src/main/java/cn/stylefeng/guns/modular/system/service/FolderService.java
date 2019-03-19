@@ -63,7 +63,7 @@ public class FolderService extends ServiceImpl<FolderMapper, Folder> {
         this.folderSetPids(folder);
 
         //完善路径，加上所有父亲的path
-        this.setParentPath(folder);
+//        this.setParentPath(folder);
 
         this.updateById(folder);
     }
