@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.stylefeng.guns.modular.system.mapper.DeptMapper">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.AttachmentMapper">
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ATTACHMENT_ID AS attachmentId,
+        FOLDER_ID AS folderId,
+        NAME AS name,
+        DESCRIPTION AS description,
+        STATUS AS status,
+        SORT AS sort,
+        VERSION AS version,
+        CREATE_TIME AS createTime,
+        UPDATE_TIME AS updateTime,
+        CREATE_USER AS createUser,
+        UPDATE_USER AS updateUser
+    </sql>
 
+    <select id="selectAttachments" resultType="map">
+        SELECT
+        SF.FOLDER_ID AS folderId,
+        SF.PATH AS path,
+        SA.ATTACHMENT_ID AS attachmentId,
+        SA.FOLDER_ID AS folderId,
+        SA.NAME AS name,
+        SA.DESCRIPTION AS description,
+        SA.STATUS AS status,
+        SA.SORT AS sort,
+        SA.VERSION AS version,
+        SA.CREATE_TIME AS createTime,
+        SA.UPDATE_TIME AS updateTime,
+        SA.CREATE_USER AS createUser,
+        SA.UPDATE_USER AS updateUser
+        FROM
+        sys_attachment SA
+        LEFT JOIN sys_folder SF ON SA.FOLDER_ID = SF.FOLDER_ID
+        <where>
+            <if test="name != null and name != ''">
+                SA.NAME like CONCAT('%',#{name},'%')
+            </if>
+            <if test="folderId != null and folderId != 0">
+                and SA.folder_id = #{folderId}
+            </if>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+                and (CREATE_TIME between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        </where>
+    </select>
 </mapper>
